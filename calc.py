@@ -155,26 +155,29 @@ class Ui_Dialog(object):
                 if(current_str[i]=="/"):
                     first=i
                     break
-            a=int(current_str[:first])
-            b=int(current_str[first+1:])
-            ans=round(a/b,3)
-            self.outputLabel.setText(str(ans))
+            a=float(current_str[:first])
+            b=float(current_str[first+1:])
+            if(b==0):
+                self.outputLabel.setText("Invalid")
+            else:
+                ans=round(a/b,3)
+                self.outputLabel.setText(str(ans))
         if "*" in current_str:
             for i in range(0,len(current_str)):
                 if(current_str[i]=="*"):
                     first=i
                     break
-            a=int(current_str[:first])
-            b=int(current_str[first+1:])
-            ans=a*b
+            a=float(current_str[:first])
+            b=float(current_str[first+1:])
+            ans=round(a*b,3)
             self.outputLabel.setText(str(ans))
         if "+" in current_str:
             for i in range(0,len(current_str)):
                 if(current_str[i]=="+"):
                     first=i
                     break
-            a=int(current_str[:first])
-            b=int(current_str[first+1:])
+            a=float(current_str[:first])
+            b=float(current_str[first+1:])
             ans=a+b
             self.outputLabel.setText(str(ans))
         if "-" in current_str:
@@ -182,12 +185,23 @@ class Ui_Dialog(object):
                 if(current_str[i]=="-"):
                     first=i
                     break
-            a=int(current_str[:first])
-            b=int(current_str[first+1:])
+            a=float(current_str[:first])
+            b=float(current_str[first+1:])
             ans=a-b
+            self.outputLabel.setText(str(ans))
+        if "%" in current_str:
+            for i in range(0,len(current_str)):
+                if(current_str[i]=="%"):
+                    first=i
+                    break
+            a=float(current_str[:first])
+            b=float(current_str[first+1:])
+            ans=(a*b)/100
             self.outputLabel.setText(str(ans))
     def press_it(self,pressed):
         current_str=self.outputLabel.text()
+        if current_str=="Invalid":
+            self.outputLabel.setText("")
         if pressed == "C":
             self.outputLabel.setText("0")
         elif(pressed=="<<" and (current_str!="" or current_str!="0")):
@@ -214,8 +228,17 @@ class Ui_Dialog(object):
             elif(pressed=="+" and current_str[-1].isdigit()):
                 self.outputLabel.setText(current_str+pressed)
             
-            elif(pressed=="." and ("." not in current_str) and current_str[-1].isdigit()):
-                self.outputLabel.setText(current_str+pressed)
+            elif(pressed=="." and current_str[-1].isdigit()):
+                flag=1
+                for i in range(len(current_str)-2,-1,-1):
+                    if current_str[i]=="." and flag==1:
+                       flag=2
+                       break
+                    elif current_str[i].isdigit()==False:
+                        flag=0
+
+                if flag!=2:
+                    self.outputLabel.setText(current_str+pressed)
             
             elif(pressed>="0" and pressed<="9"):
                self.outputLabel.setText(current_str+pressed)
